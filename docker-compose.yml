@@ -1,0 +1,27 @@
+version: "3"
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    ports:
+      - "9000:9000"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.5'
+#          memory: 4g
+
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: app
+    restart: always
+    depends_on:
+      - clickhouse
+    ports:
+      - "9090:9090"
+    environment:
+      - CLICKHOUSE_URI=${CLICKHOUSE_URI}
